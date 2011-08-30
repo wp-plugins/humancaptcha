@@ -48,18 +48,24 @@ Email us and we'll do our best to support.
 
 == Screenshots ==
 
-1. screenshot1.png shows how the question slots seamlessly into the comments section of the WordPress site.
+1. screenshot-1.png shows how the question slots seamlessly into the comments section of the WordPress site.
 
-2. screenshot2.png shows the administration section of the Outerbridge HumanCaptcha plugin.
+2. screenshot-2.png shows the administration section of the Outerbridge HumanCaptcha plugin.
 
 
 == Changelog ==
 
+= 0.2 =
+* (30 Aug 2011) Fixed session_start issue
+
 = 0.1 =
-- (25 Aug 2011) Initial Release
+* (25 Aug 2011) Initial Release
 
 
 == Upgrade Notice ==
 
+= 0.2 =
+* Updated to improve plugin compatability.
+
 = 0.1 =
-- This is the initial release.
+* This is the initial release.

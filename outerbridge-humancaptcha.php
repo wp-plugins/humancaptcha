@@ -4,7 +4,7 @@ Plugin Name: Outerbridge HumanCaptcha
 Plugin URI: http://outerbridge.co.uk/humancaptcha/ 
 Description: HumanCaptcha is a plugin written by Outerbridge which uses questions that require human logic to answer them and which machines cannot easily answer.
 Author: Mike Jones a.k.a. Outerbridge Mike
-Version: 0.1
+Version: 0.2
 Author URI: http://outerbridge.co.uk/author/mike/
 Tags: captcha, text-based, human, logic, questions, answers
 License: GPL v2
@@ -37,7 +37,7 @@ new obr_humancaptcha;
 class obr_humancaptcha{
 	
 	// version
-	public $obr_humancaptcha_version = '0.1';
+	public $obr_humancaptcha_version = '0.2';
 	
 	// constructor
 	function obr_humancaptcha() {
@@ -50,6 +50,7 @@ class obr_humancaptcha{
 		add_filter('comment_form_default_fields', array(&$this, 'obr_build_form'));
 		add_action('wp_head', array(&$this, 'obr_header'));
 		add_action('admin_menu', array(&$this, 'obr_admin_menu'));
+		add_action('init', array(&$this, 'obr_init'));
 	}
 
 	// functions
@@ -113,7 +114,6 @@ class obr_humancaptcha{
 			$selected = $this->obr_select_question();
 			$question = $selected['question'];
 			$answer = $selected['answer'];
-			session_start();
 			$_SESSION['obr_answer'] = md5(strtolower(trim(htmlentities($answer))));
 			// use the comment-form-email class as it works better with 2011
 			$fields['obr_hlc'] = '<p class="comment-form-email"><label for="obr_hlc">'.__(stripslashes($question)).'</label> <span class="required">*</span><input id="answer" name="answer" size="30" type="text" aria-required=\'true\' /></p>';
@@ -217,6 +217,11 @@ class obr_humancaptcha{
 		$obr_table_name = $this->obr_table_name();
 		$obr_add_qanda = $wpdb->insert($obr_table_name, array('fld_questions' => $question, 'fld_answers' => $answer));
 	}
-
+	
+	function obr_init(){
+		if (!session_id()){
+			session_start();
+		}
+	}
 }
 ?>
