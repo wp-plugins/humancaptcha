@@ -32,7 +32,7 @@ if (isset($_POST['addqanda'])){
 	}
 }
 ?>
-<h1><img src="<?php echo plugins_url('outerbridge-humancaptcha/outerbridge-logo.png'); ?>" width="150" height="107" /><br />Outerbridge HumanCaptcha - Settings</h1>
+<h1><img src="<?php echo plugins_url('humancaptcha/outerbridge-logo.png'); ?>" width="150" height="107" /><br />Outerbridge HumanCaptcha - Settings</h1>
 <br />
 <h3>HumanCaptcha Questions and Answers</h3>
 <p>You can update your questions and answers here.</p>
