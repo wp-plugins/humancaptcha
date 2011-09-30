@@ -4,7 +4,7 @@ Plugin Name: Outerbridge HumanCaptcha
 Plugin URI: http://outerbridge.co.uk/humancaptcha/ 
 Description: HumanCaptcha is a plugin written by Outerbridge which uses questions that require human logic to answer them and which machines cannot easily answer.
 Author: Mike Jones a.k.a. Outerbridge Mike
-Version: 0.2
+Version: 1.0
 Author URI: http://outerbridge.co.uk/author/mike/
 Tags: captcha, text-based, human, logic, questions, answers
 License: GPL v2
@@ -37,7 +37,7 @@ new obr_humancaptcha;
 class obr_humancaptcha{
 	
 	// version
-	public $obr_humancaptcha_version = '0.2';
+	public $obr_humancaptcha_version = '1.0';
 	
 	// constructor
 	function obr_humancaptcha() {
@@ -46,8 +46,15 @@ class obr_humancaptcha{
 	
 	function __construct(){
 		register_activation_hook(__FILE__, array(&$this, 'obr_install'));
-		add_filter('preprocess_comment', array(&$this, 'obr_validate_answer'));
-		add_filter('comment_form_default_fields', array(&$this, 'obr_build_form'));
+		add_filter('comment_form_default_fields', array(&$this, 'obr_comment_build_form'));
+		add_filter('preprocess_comment', array(&$this, 'obr_comment_validate_answer'), 10, 2);
+		
+		add_action('register_form', array(&$this, 'obr_register_build_form'));
+		add_filter('register_post', array(&$this, 'obr_register_validate_answer'), 10, 2);
+
+		add_action('login_form', array(&$this, 'obr_login_build_form'));
+		add_filter('wp_authenticate', array(&$this, 'obr_login_validate_answer'), 10, 2);
+
 		add_action('wp_head', array(&$this, 'obr_header'));
 		add_action('admin_menu', array(&$this, 'obr_admin_menu'));
 		add_action('init', array(&$this, 'obr_init'));
@@ -67,6 +74,20 @@ class obr_humancaptcha{
 			require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 			dbDelta($mysql);
 			$new_rows = $this->obr_insert_default_data();
+		}
+
+		$obr_admin_table_name = $this->obr_admin_table_name();
+		if($wpdb->get_var("SHOW TABLES LIKE '$obr_admin_table_name';") != $obr_admin_table_name){
+			$mysql = "CREATE TABLE $obr_admin_table_name (
+				fld_ref int(11) NOT NULL AUTO_INCREMENT,
+				fld_setting int(11) NOT NULL,
+				fld_value boolean NOT NULL DEFAULT 0,
+				UNIQUE KEY fld_setting (fld_setting),
+				UNIQUE KEY fld_ref (fld_ref)
+			);";
+			require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+			dbDelta($mysql);
+			$new_rows = $this->obr_insert_default_admin_data();
 		}
 
 		// now add in a version number
@@ -102,13 +123,39 @@ class obr_humancaptcha{
 		}
 	}
 
+	function obr_insert_default_admin_data(){
+		global $wpdb;
+		$obr_admin_table_name = $this->obr_admin_table_name();
+		$default_admin_data = array(
+			// 1 is for comments - default true
+			array(1, 1),
+			// 2 is for registration - default false
+			array(2, 0),
+			// 3 is for login - default false
+			array(3, 0)
+		);
+		foreach ($default_admin_data as $row){
+			$new_row = $wpdb->insert($obr_admin_table_name, array('fld_setting' => $row[0], 'fld_value' => $row[1]));
+		}
+	}
+
 	function obr_table_name(){
 		global $wpdb;
 		$obr_table_name = $wpdb->prefix."obr_humancaptcha_qanda";
 		return $obr_table_name;
 	}	
 	
-	function obr_build_form($fields){
+	function obr_admin_table_name(){
+		global $wpdb;
+		$obr_admin_table_name = $wpdb->prefix."obr_humancaptcha_admin";
+		return $obr_admin_table_name;
+	}	
+	
+	function obr_comment_build_form($fields){
+		global $comments_on;
+		if (!$comments_on){
+			return $fields;
+		}
 		global $user_ID;
 		if (!$user_ID){
 			$selected = $this->obr_select_question();
@@ -119,6 +166,35 @@ class obr_humancaptcha{
 			$fields['obr_hlc'] = '<p class="comment-form-email"><label for="obr_hlc">'.__(stripslashes($question)).'</label> <span class="required">*</span><input id="answer" name="answer" size="30" type="text" aria-required=\'true\' /></p>';
 			return $fields;
 		}
+	}
+	
+	function obr_register_build_form($fields){
+		global $register_on;
+		if (!$register_on){
+			return $fields;
+		}
+		$fields = $this->obr_build_form($fields);
+		return $fields;
+	}
+
+	function obr_login_build_form($fields){
+		global $login_on;
+		if (!$login_on){
+			return $fields;
+		}
+		$fields = $this->obr_build_form($fields);
+		return $fields;
+		
+	}
+
+	function obr_build_form($fields){
+		$selected = $this->obr_select_question();
+		$question = $selected['question'];
+		$answer = $selected['answer'];
+		$_SESSION['obr_answer'] = md5(strtolower(trim(htmlentities($answer))));
+		$fields['obr_hlc'] = '<p><label for="obr_hlc">'.__(stripslashes($question)).'<br /><input type="text" name="answer" id="answer" class="input" value="" size="25" tabindex="20" /></label></p>';
+		echo $fields['obr_hlc'];
+		return $fields;
 	}
 	
 	function obr_header(){
@@ -134,21 +210,41 @@ class obr_humancaptcha{
 		return $selected;
 	}
 
-	function obr_validate_answer($commentdata){
+	function obr_comment_validate_answer($commentdata){
+		global $comments_on;
 		global $user_ID;
-		if (!$user_ID){
-			session_start();
-			if ((!isset($_POST['answer'])) || ($_POST['answer'] == '')){
-				wp_die(__('Error: please fill the required field (humancaptcha).'));
-			}
-			$user_answer = md5(strtolower(trim(stripslashes(htmlentities($_POST['answer'])))));
-			$obr_answer = strtolower(trim(stripslashes(htmlentities($_SESSION['obr_answer']))));
-			if ($user_answer != $obr_answer){
-				wp_die(__('Error: your answer to the humancaptcha question is incorrect.  Use your browser\'s back button to try again.'));
-			}
+		if (!$user_ID && $comments_on){
+			$this->obr_validate_answer();
 		}
 		return $commentdata;
 	}
+
+	function obr_register_validate_answer($user_login, $user_email){
+		global $register_on;
+		if (($user_login != '') && ($user_email != '') && $register_on){
+			$this->obr_validate_answer();
+		}
+	}
+	
+	function obr_login_validate_answer($user_login, $user_password){
+		global $login_on;
+		if (($user_login != '') && ($user_password != '') && $login_on){
+			$this->obr_validate_answer();
+		}
+	}
+	
+	function obr_validate_answer(){
+		session_start();
+		if ((!isset($_POST['answer'])) || ($_POST['answer'] == '')){
+			wp_die(__('Error: please fill the required field (humancaptcha).'));
+		}
+		$user_answer = md5(strtolower(trim(stripslashes(htmlentities($_POST['answer'])))));
+		$obr_answer = strtolower(trim(stripslashes(htmlentities($_SESSION['obr_answer']))));
+		if ($user_answer != $obr_answer){
+			wp_die(__('Error: your answer to the humancaptcha question is incorrect.  Use your browser\'s back button to try again.'));
+		}
+		return true;
+	}	
 
 	function obr_admin_menu(){
 		if (is_super_admin()) {
@@ -167,7 +263,7 @@ class obr_humancaptcha{
 		$page = 'plugins.php?page=obr-hlc';
 		$num_rows = $wpdb->get_row($mysql);
 		if ($wpdb->num_rows > 0){
-			echo '<table style="text-align: center;"><tr><td width="50">Number</td><td width="500">Question</td><td width="150">Answer</td><td>&nbsp;</td><td>&nbsp;</td></tr>';
+			echo '<table style="text-align: center;"><tr><td width="50"><em>Number</em></td><td width="500"><em>Question</em></td><td width="150"><em>Answer</em></td><td>&nbsp;</td><td>&nbsp;</td></tr>';
 			$counter = 1;
 			foreach($wpdb->get_results($mysql) as $key => $row){
 				echo '<form method="post" action="',$page,'">';
@@ -196,7 +292,7 @@ class obr_humancaptcha{
 			echo '</form>';
 			echo '</table>';
 		} else {
-			echo 'Nothing to display.';
+			echo 'Could not retrieve your settings.';
 		}
 	}
 	
@@ -218,10 +314,74 @@ class obr_humancaptcha{
 		$obr_add_qanda = $wpdb->insert($obr_table_name, array('fld_questions' => $question, 'fld_answers' => $answer));
 	}
 	
+	function obr_admin_settings($message2 = null){
+		global $wpdb;
+		$obr_admin_table_name = $this->obr_admin_table_name();
+		$mysql = "SELECT * FROM $obr_admin_table_name ORDER BY fld_setting ASC;";
+		$page = 'plugins.php?page=obr-hlc';
+		$num_rows = $wpdb->get_row($mysql);
+		if ($wpdb->num_rows == 3){
+			echo '<table style="text-align: center;"><tr><td width="50"><em>Number</em></td><td width="300"><em>Setting</em></td><td width="150"><em>Status</em></td><td>&nbsp;</td></tr>';
+			$counter = 1;
+			foreach($wpdb->get_results($mysql) as $key => $row){
+				echo '<form method="post" action="',$page,'">';
+				echo '<tr><td style="width: 75px;">',$counter,'</td><td style="text-align: left;">';
+				if (stripslashes($row->fld_setting) == 1){
+					echo 'Use on comments form? <em>Default: On</em>';
+				} elseif (stripslashes($row->fld_setting) == 2){
+					echo 'Use on registration form? <em>Default: Off</em>';
+				} elseif (stripslashes($row->fld_setting) == 3){
+					echo 'Use on login form? <em>Default: Off</em>';
+				} else {
+					// there shouldn't be any other cases!
+				}
+				echo '</td><td>';
+				if (stripslashes($row->fld_value)){
+					echo '<strong>On</strong><input type="hidden" name="value" value=1 />';
+				} else {
+					echo '<strong>Off</strong><input type="hidden" name="value" value=0 />';
+				}
+				echo '</td>';
+				echo '<td><input type="hidden" name="setting" value=',$row->fld_setting,' /><input type="submit" name="togglesetting" value="Toggle Setting" style="width: 125px;" /></td>';
+				echo '</form>';
+				$counter++;
+			}
+			if (isset($message2)){
+				echo '<tr><td colspan="4"><strong>',$message2,'</strong></td></tr>';
+			}
+			echo '</table>';
+		} else {
+			echo 'Nothing to display.';
+		}
+	}
+	
+	function obr_update_admin_settings($setting, $value){
+		global $wpdb;
+		$obr_admin_table_name = $this->obr_admin_table_name();
+		$wpdb->update($obr_admin_table_name, array('fld_value' => $value), array('fld_setting' => $setting));
+	}
+
+	function obr_get_setting_value($setting){
+		global $wpdb;
+		$obr_admin_table_name = $this->obr_admin_table_name();
+		$mysql = $wpdb->get_row("SELECT * FROM $obr_admin_table_name WHERE fld_setting = $setting LIMIT 1;");
+		$value = $mysql->fld_value;
+		if ($value){
+			return $value;
+		} else {
+			return 0;
+		}
+	}
+
 	function obr_init(){
 		if (!session_id()){
 			session_start();
 		}
+		global $comments_on, $register_on, $login_on; 
+		// see obr_insert_default_admin_data for which setting is which...
+		$comments_on = $this->obr_get_setting_value(1);
+		$register_on = $this->obr_get_setting_value(2);
+		$login_on = $this->obr_get_setting_value(3);
 	}
 }
 ?>

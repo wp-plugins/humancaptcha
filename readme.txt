@@ -55,6 +55,9 @@ Email us and we'll do our best to support.
 
 == Changelog ==
 
+= 1.0 =
+* (30 Sep 2011) HumanCaptcha now added to registration and login forms as well as comments form.  Toggles added to admin menu to allow users to decide where HumanCaptcha is applied.
+
 = 0.2 =
 * (30 Aug 2011) Fixed session_start issue
 
@@ -63,6 +66,9 @@ Email us and we'll do our best to support.
 
 
 == Upgrade Notice ==
+
+= 1.0 =
+* New functionality added.
 
 = 0.2 =
 * Updated to improve plugin compatability.
