@@ -3,7 +3,7 @@ Contributors: Mike Jones (outerbridge)
 Author URI: http://outerbridge.co.uk/author/mike/
 Tags: captcha, text-based, human, logic, questions, answers
 Requires at least: 3.2
-Tested up to: 3.2.1
+Tested up to: 3.3
 Stable tag: trunk
 
 HumanCaptcha is plugin written by Outerbridge which uses questions that require human logic to answer them and which machines cannot easily answer.
@@ -55,6 +55,9 @@ Email us and we'll do our best to support.
 
 == Changelog ==
 
+= 1.1 =
+* (03 Jan 2012) Tested and stable up to WP3.3
+
 = 1.0 =
 * (30 Sep 2011) HumanCaptcha now added to registration and login forms as well as comments form.  Toggles added to admin menu to allow users to decide where HumanCaptcha is applied.
 
@@ -66,6 +69,9 @@ Email us and we'll do our best to support.
 
 
 == Upgrade Notice ==
+
+= 1.1 =
+* Tested and stable up to WP3.3
 
 = 1.0 =
 * New functionality added.
