@@ -55,6 +55,12 @@ Email us and we'll do our best to support.
 
 == Changelog ==
 
+= 1.2.1 =
+* (05 Jan 2012) No changes. v1.2 didn't commit properly.
+
+= 1.2 =
+* (05 Jan 2012) Updated obr_admin_menu function to check against 'manage_options' rather than 'edit_plugins'.
+
 = 1.1 =
 * (03 Jan 2012) Tested and stable up to WP3.3
 
@@ -69,6 +75,12 @@ Email us and we'll do our best to support.
 
 
 == Upgrade Notice ==
+
+= 1.2.1 =
+* No changes. v1.2 didn't commit properly.
+
+= 1.2 =
+* Included safer admin menu.
 
 = 1.1 =
 * Tested and stable up to WP3.3
