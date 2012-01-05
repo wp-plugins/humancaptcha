@@ -12,15 +12,17 @@ License: GPL v2
 
 /**
  *
- * v1.2 120105 Updated obr_admin_menu function to check against 'manage_options' rather than 'edit_plugins'.  This allows for "define('DISALLOW_FILE_EDIT', true);" being enabled in wp-config.php
+ * v1.2.1 120105 No changes. v1.2 didn't commit properly.
  *
- * v1.1 120103 Tested and stable up to WP3.3
+ * v1.2   120105 Updated obr_admin_menu function to check against 'manage_options' rather than 'edit_plugins'.  This allows for "define('DISALLOW_FILE_EDIT', true);" being enabled in wp-config.php
  *
- * v1.0 110930 HumanCaptcha now added to registration and login forms as well as comments form.  Toggles added to admin menu to allow users to decide where HumanCaptcha is applied.
+ * v1.1   120103 Tested and stable up to WP3.3
  *
- * v0.2 110830 Fixed session_start issue
+ * v1.0   110930 HumanCaptcha now added to registration and login forms as well as comments form.  Toggles added to admin menu to allow users to decide where HumanCaptcha is applied.
  *
- * v0.1 110825 Initial Release
+ * v0.2   110830 Fixed session_start issue
+ *
+ * v0.1   110825 Initial Release
  *
  */
 
@@ -51,7 +53,7 @@ new obr_humancaptcha;
 class obr_humancaptcha{
 	
 	// version
-	public $obr_humancaptcha_version = '1.2';
+	public $obr_humancaptcha_version = '1.2.1';
 	
 	// constructor
 	function obr_humancaptcha() {
