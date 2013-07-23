@@ -1,9 +1,10 @@
 <?php
+$message = '';
+$message2 = '';
 if (isset($_POST['updateqanda'])){
-	$question = mysql_real_escape_string(trim(stripslashes(htmlentities($_POST['question']))));
-	$answer = mysql_real_escape_string(trim(stripslashes(htmlentities($_POST['answer']))));
-	$ref = mysql_real_escape_string(stripslashes(htmlentities($_POST['ref'])));
-	$ref = abs(intval($ref)); // it's a positive integer
+	$question = mysql_real_escape_string(trim($_POST['question']));
+	$answer = mysql_real_escape_string(trim($_POST['answer']));
+	$ref = abs(intval($_POST['ref'])); // it's a positive integer
 	if ($question && $answer && $ref){
 		$message = 'Question and/or answer updated.';
 		$this->obr_update_qanda($ref, $question, $answer);
@@ -12,8 +13,7 @@ if (isset($_POST['updateqanda'])){
 	}
 }	
 if (isset($_POST['deleteqanda'])){
-	$ref = mysql_real_escape_string(stripslashes(htmlentities($_POST['ref'])));
-	$ref = abs(intval($ref)); // it's a positive integer
+	$ref = abs(intval($_POST['ref'])); // it's a positive integer
 	if ($ref){
 		$message = 'Selected question and answer deleted.';
 		$this->obr_delete_qanda($ref);
@@ -22,8 +22,8 @@ if (isset($_POST['deleteqanda'])){
 	}
 }	
 if (isset($_POST['addqanda'])){
-	$question = mysql_real_escape_string(trim(stripslashes(htmlentities($_POST['question']))));
-	$answer = mysql_real_escape_string(trim(stripslashes(htmlentities($_POST['answer']))));
+	$question = mysql_real_escape_string(trim($_POST['question']));
+	$answer = mysql_real_escape_string(trim($_POST['answer']));
 	if ($question && $answer){
 		$message = 'New question and answer added.';
 		$this->obr_add_qanda($question, $answer);
@@ -32,8 +32,8 @@ if (isset($_POST['addqanda'])){
 	}
 }
 if (isset($_POST['togglesetting'])){
-	$setting = mysql_real_escape_string(trim(stripslashes(htmlentities($_POST['setting']))));
-	$value = mysql_real_escape_string(trim(stripslashes(htmlentities($_POST['value']))));
+	$setting = mysql_real_escape_string(trim($_POST['setting']));
+	$value = intval($_POST['value']);
 	if ($setting && (($value == 0) || ($value == 1))){
 		$message2 = 'Setting updated.';
 		//toggle $value

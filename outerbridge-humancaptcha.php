@@ -4,13 +4,15 @@ Plugin Name: Outerbridge HumanCaptcha
 Plugin URI: http://outerbridge.co.uk/humancaptcha/ 
 Description: HumanCaptcha is a plugin written by Outerbridge which uses questions that require human logic to answer them and which machines cannot easily answer.
 Author: Mike Jones a.k.a. Outerbridge Mike
-Version: 1.2.1
+Version: 1.3
 Author URI: http://outerbridge.co.uk/author/mike/
 Tags: captcha, text-based, human, logic, questions, answers
 License: GPL v2
 */
 
 /**
+ *
+ * v1.3	  130723 Fixed UTF8 issue
  *
  * v1.2.1 120105 No changes. v1.2 didn't commit properly.
  *
@@ -53,7 +55,7 @@ new obr_humancaptcha;
 class obr_humancaptcha{
 	
 	// version
-	public $obr_humancaptcha_version = '1.2.1';
+	public $obr_humancaptcha_version = '1.3';
 	
 	// constructor
 	function obr_humancaptcha() {
@@ -177,7 +179,7 @@ class obr_humancaptcha{
 			$selected = $this->obr_select_question();
 			$question = $selected['question'];
 			$answer = $selected['answer'];
-			$_SESSION['obr_answer'] = md5(strtolower(trim(htmlentities($answer))));
+			$_SESSION['obr_answer'] = md5(strtolower(trim($answer)));
 			// use the comment-form-email class as it works better with 2011
 			$fields['obr_hlc'] = '<p class="comment-form-email"><label for="obr_hlc">'.__(stripslashes($question)).'</label> <span class="required">*</span><input id="answer" name="answer" size="30" type="text" aria-required=\'true\' /></p>';
 			return $fields;
@@ -207,7 +209,7 @@ class obr_humancaptcha{
 		$selected = $this->obr_select_question();
 		$question = $selected['question'];
 		$answer = $selected['answer'];
-		$_SESSION['obr_answer'] = md5(strtolower(trim(htmlentities($answer))));
+		$_SESSION['obr_answer'] = md5(strtolower(trim($answer)));
 		$fields['obr_hlc'] = '<p><label for="obr_hlc">'.__(stripslashes($question)).'<br /><input type="text" name="answer" id="answer" class="input" value="" size="25" tabindex="20" /></label></p>';
 		echo $fields['obr_hlc'];
 		return $fields;
@@ -250,12 +252,14 @@ class obr_humancaptcha{
 	}
 	
 	function obr_validate_answer(){
-		session_start();
+		if (!session_id()){
+			session_start();
+		}
 		if ((!isset($_POST['answer'])) || ($_POST['answer'] == '')){
 			wp_die(__('Error: please fill the required field (humancaptcha).'));
 		}
-		$user_answer = md5(strtolower(trim(stripslashes(htmlentities($_POST['answer'])))));
-		$obr_answer = strtolower(trim(stripslashes(htmlentities($_SESSION['obr_answer']))));
+		$user_answer = md5(strtolower(trim($_POST['answer'])));
+		$obr_answer = strtolower(trim($_SESSION['obr_answer']));
 		if ($user_answer != $obr_answer){
 			wp_die(__('Error: your answer to the humancaptcha question is incorrect.  Use your browser\'s back button to try again.'));
 		}
@@ -264,7 +268,7 @@ class obr_humancaptcha{
 
 	function obr_admin_menu(){
 		if (is_super_admin()) {
-			add_submenu_page('plugins.php', 'HumanCaptcha Admin', 'HumanCaptcha Admin', 'manage_options', 'obr-hlc', array(&$this, 'obr_admin'));
+			add_submenu_page('plugins.php', 'HumanCaptcha', 'HumanCaptcha', 'manage_options', 'obr-hlc', array(&$this, 'obr_admin'));
 		}
 	}
 	
