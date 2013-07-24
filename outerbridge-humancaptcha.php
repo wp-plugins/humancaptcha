@@ -4,7 +4,7 @@ Plugin Name: Outerbridge HumanCaptcha
 Plugin URI: http://outerbridge.co.uk/humancaptcha/ 
 Description: HumanCaptcha is a plugin written by Outerbridge which uses questions that require human logic to answer them and which machines cannot easily answer.
 Author: Mike Jones a.k.a. Outerbridge Mike
-Version: 1.3
+Version: 1.4
 Author URI: http://outerbridge.co.uk/author/mike/
 Tags: captcha, text-based, human, logic, questions, answers
 License: GPL v2
@@ -12,19 +12,21 @@ License: GPL v2
 
 /**
  *
- * v1.3	  130723 Fixed UTF8 issue
+ *	v1.4	130724	Fixed the "add new" option which disappeared if the user deleted all questions
  *
- * v1.2.1 120105 No changes. v1.2 didn't commit properly.
+ *	v1.3	130723	Fixed UTF8 issue
  *
- * v1.2   120105 Updated obr_admin_menu function to check against 'manage_options' rather than 'edit_plugins'.  This allows for "define('DISALLOW_FILE_EDIT', true);" being enabled in wp-config.php
+ *	v1.2.1	120105	No changes. v1.2 didn't commit properly.
  *
- * v1.1   120103 Tested and stable up to WP3.3
+ *	v1.2	120105	Updated obr_admin_menu function to check against 'manage_options' rather than 'edit_plugins'.  This allows for "define('DISALLOW_FILE_EDIT', true);" being enabled in wp-config.php
  *
- * v1.0   110930 HumanCaptcha now added to registration and login forms as well as comments form.  Toggles added to admin menu to allow users to decide where HumanCaptcha is applied.
+ *	v1.1	120103	Tested and stable up to WP3.3
  *
- * v0.2   110830 Fixed session_start issue
+ *	v1.0	110930	HumanCaptcha now added to registration and login forms as well as comments form.  Toggles added to admin menu to allow users to decide where HumanCaptcha is applied.
  *
- * v0.1   110825 Initial Release
+ *	v0.2	110830	Fixed session_start issue
+ *
+ *	v0.1	110825	Initial Release
  *
  */
 
@@ -37,15 +39,15 @@ License: GPL v2
  * HumanCaptcha than a character-based one.
  * 
  * CAPTCHAs are useful for improving security in a number of situations, for example:
- * 1.	Reducing Comment Spam in Blogs
- * 	Most bloggers will have come across programs that submit spam comments, often with the aim of improving the search
- * 	engine ranking of a website.  By using a CAPTCHA, only humans can enter comments on your blog, and people do not need
- * 	to sign up before they enter a comment.
- * 2.	Protecting Email Addresses From Scrapers
- * 	Spammers crawl the web looking for e-mail addresses rendered in text. CAPTCHAs can hide your e-mail address from web
- * 	scrapers, by requiring users to solve a CAPTCHA before revealing your e-mail. 
- * 3.	Deterring Viruses, Worms and Spam 
- * 	CAPTCHAs may reduce the likelihood of e-mailed viruses, worms and spam, by only accepting an e-mail if it has been
+ * 1. Reducing Comment Spam in Blogs
+ * 	  Most bloggers will have come across programs that submit spam comments, often with the aim of improving the search
+ * 	  engine ranking of a website.  By using a CAPTCHA, only humans can enter comments on your blog, and people do not need
+ * 	  to sign up before they enter a comment.
+ * 2. Protecting Email Addresses From Scrapers
+ * 	  Spammers crawl the web looking for e-mail addresses rendered in text. CAPTCHAs can hide your e-mail address from web
+ * 	  scrapers, by requiring users to solve a CAPTCHA before revealing your e-mail. 
+ * 3. Deterring Viruses, Worms and Spam 
+ * 	  CAPTCHAs may reduce the likelihood of e-mailed viruses, worms and spam, by only accepting an e-mail if it has been
  *    established that there is a human behind the sending computer.
  * 
  */
@@ -55,7 +57,7 @@ new obr_humancaptcha;
 class obr_humancaptcha{
 	
 	// version
-	public $obr_humancaptcha_version = '1.3';
+	public $obr_humancaptcha_version = '1.4';
 	
 	// constructor
 	function obr_humancaptcha() {
@@ -282,8 +284,8 @@ class obr_humancaptcha{
 		$mysql = "SELECT * FROM $obr_table_name ORDER BY fld_ref ASC;";
 		$page = 'plugins.php?page=obr-hlc';
 		$num_rows = $wpdb->get_row($mysql);
+		echo '<table style="text-align: center;"><tr><td width="50"><em>Number</em></td><td width="500"><em>Question</em></td><td width="150"><em>Answer</em></td><td>&nbsp;</td><td>&nbsp;</td></tr>';
 		if ($wpdb->num_rows > 0){
-			echo '<table style="text-align: center;"><tr><td width="50"><em>Number</em></td><td width="500"><em>Question</em></td><td width="150"><em>Answer</em></td><td>&nbsp;</td><td>&nbsp;</td></tr>';
 			$counter = 1;
 			foreach($wpdb->get_results($mysql) as $key => $row){
 				echo '<form method="post" action="',$page,'">';
@@ -295,25 +297,23 @@ class obr_humancaptcha{
 				echo '</form>';
 				$counter++;
 			}
-			echo '<form method="post" action="',$page,'">';
-			echo '<tr><td>Add New</td><td><input type="text" name="question" value="';
-			if (isset($question)){
-				echo $question;
-			}
-			echo '" style="width: 490px; text-align: left;" /></td><td><input type="text" name="answer" value="';
-			if (isset($answer)){
-				echo $answer;
-			}
-			echo '" style="width: 140px; text-align: left;" /></td>';
-			echo '<td><input type="submit" name="addqanda" value="Add New Q & A" style="width: 125px;" /></td></tr>';
-			if (isset($message)){
-				echo '<tr><td colspan="5"><strong>',$message,'</strong></td></tr>';
-			}
-			echo '</form>';
-			echo '</table>';
-		} else {
-			echo 'Could not retrieve your settings.';
 		}
+		echo '<form method="post" action="',$page,'">';
+		echo '<tr><td style="width: 75px;">Add New</td><td><input type="text" name="question" value="';
+		if (isset($question)){
+			echo $question;
+		}
+		echo '" style="width: 490px; text-align: left;" /></td><td><input type="text" name="answer" value="';
+		if (isset($answer)){
+			echo $answer;
+		}
+		echo '" style="width: 140px; text-align: left;" /></td>';
+		echo '<td><input type="submit" name="addqanda" value="Add New Q & A" style="width: 125px;" /></td></tr>';
+		if (isset($message)){
+			echo '<tr><td colspan="5"><strong>',$message,'</strong></td></tr>';
+		}
+		echo '</form>';
+		echo '</table>';
 	}
 	
 	function obr_update_qanda($ref, $question, $answer){
