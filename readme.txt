@@ -1,4 +1,4 @@
-=== Outerbridge HumanCaptcha ===
+=== HumanCaptcha by Outerbridge ===
 Contributors: Mike Jones (outerbridge)
 Author URI: http://outerbridge.co.uk/author/mike/
 Tags: captcha, text-based, human, logic, questions, answers
