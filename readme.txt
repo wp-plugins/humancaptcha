@@ -27,6 +27,10 @@ CAPTCHAs are useful for improving security in a number of situations, for exampl
 3.	Deterring Viruses, Worms and Spam 
 	CAPTCHAs may reduce the likelihood of e-mailed viruses, worms and spam, by only accepting an e-mail if it has been established that there is a human behind the sending computer.
 
+= Credits =
+
+Many thanks to TH90 of MPW D&D for the Persian translation files (fa_IR) Language: Persian, Country: Iran.
+
 
 == Installation ==
 
@@ -43,7 +47,7 @@ CAPTCHAs are useful for improving security in a number of situations, for exampl
 
 = Where do I get help with this plugin? =
 
-Email us and we'll do our best to support.
+Leave a comment in the support forum and we'll do our best to support.
 
 
 == Screenshots ==
@@ -55,26 +59,34 @@ Email us and we'll do our best to support.
 
 == Changelog ==
 
-= 1.2.1 =
-* (05 Jan 2012) No changes. v1.2 didn't commit properly.
+= 1.X =
+* v1.5.1 (16 Aug 13) Added TH90 of MPW D&D's Persian translation file
+* v1.5 (16 Aug 13) Made the plugin translation ready and tidied the code a bit
+* v1.4 (24 Jul 13) Fixed the "add new" option which disappeared if the user deleted all questions
+* v1.3 (23 Jul 13) Fixed UTF8 issue
+* v1.2.1 (05 Jan 2012) No changes. v1.2 didn't commit properly.
+* v1.2 (05 Jan 2012) Updated obr_admin_menu function to check against 'manage_options' rather than 'edit_plugins'.
+* v1.1 (03 Jan 2012) Tested and stable up to WP3.3
+* v1.0(30 Sep 2011) HumanCaptcha now added to registration and login forms as well as comments form.  Toggles added to admin menu to allow users to decide where HumanCaptcha is applied.
 
-= 1.2 =
-* (05 Jan 2012) Updated obr_admin_menu function to check against 'manage_options' rather than 'edit_plugins'.
-
-= 1.1 =
-* (03 Jan 2012) Tested and stable up to WP3.3
-
-= 1.0 =
-* (30 Sep 2011) HumanCaptcha now added to registration and login forms as well as comments form.  Toggles added to admin menu to allow users to decide where HumanCaptcha is applied.
-
-= 0.2 =
-* (30 Aug 2011) Fixed session_start issue
-
-= 0.1 =
-* (25 Aug 2011) Initial Release
+= 0.X =
+* 0.2 (30 Aug 2011) Fixed session_start issue
+* 0.1 (25 Aug 2011) Initial Release
 
 
 == Upgrade Notice ==
+
+= v1.5.1 =
+* Added TH90 of MPW D&D's Persian translation file
+
+= v1.5 =
+* Made the plugin translation ready and tidied the code a bit
+
+= v1.4 =
+* Fixed the "add new" option which disappeared if the user deleted all questions
+
+= v1.3 =
+* Fixed UTF8 issue
 
 = 1.2.1 =
 * No changes. v1.2 didn't commit properly.

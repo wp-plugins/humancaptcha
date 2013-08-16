@@ -13,6 +13,8 @@ License: GPL v2
 
 /**
  *
+ *	v1.5.1	130816	Added TH90 of MPW D&D's Persian translation file
+ *
  *	v1.5	130816	Made the plugin translation ready and tidied the code a bit
  *
  *	v1.4	130724	Fixed the "add new" option which disappeared if the user deleted all questions
