@@ -4,7 +4,7 @@ Plugin Name: HumanCaptcha by Outerbridge
 Plugin URI: http://outerbridge.co.uk/humancaptcha/ 
 Description: HumanCaptcha uses questions that require human logic to answer them and which machines cannot easily answer.  This plugin is written by Outerbridge.
 Author: Mike Jones a.k.a. Outerbridge Mike
-Version: 1.5.1
+Version: 1.5.2
 Author URI: http://outerbridge.co.uk/author/mike/
 Text Domain: humancaptcha
 Tags: captcha, text-based, human, logic, questions, answers
@@ -12,6 +12,8 @@ License: GPL v2
 */
 
 /**
+ *
+ *	v1.5.2	130816	Corrected one missed translation point
  *
  *	v1.5.1	130816	Added TH90 of MPW D&D's Persian translation file
  *
@@ -70,7 +72,7 @@ $obr_admin_table_name = $wpdb->prefix."obr_humancaptcha_admin";
 class obr_humancaptcha{
 	
 	// version
-	public $obr_humancaptcha_version = '1.5.1';
+	public $obr_humancaptcha_version = '1.5.2';
 	
 	// constructor
 	function obr_humancaptcha() {
@@ -361,7 +363,7 @@ class obr_humancaptcha{
 		$page = 'plugins.php?page=obr-hlc';
 		$num_rows = $wpdb->get_row($mysql);
 		if ($wpdb->num_rows == 3){
-			echo '<table style="text-align: center;"><tr><td width="50"><em>Number</em></td><td width="300"><em>'.__('Setting', 'humancaptcha').'</em></td><td width="150"><em>'.__('Status', 'humancaptcha').'</em></td><td>&nbsp;</td></tr>';
+			echo '<table style="text-align: center;"><tr><td width="50"><em>'.__('Number', 'humancaptcha').'</em></td><td width="300"><em>'.__('Setting', 'humancaptcha').'</em></td><td width="150"><em>'.__('Status', 'humancaptcha').'</em></td><td>&nbsp;</td></tr>';
 			$counter = 1;
 			foreach($wpdb->get_results($mysql) as $key => $row){
 				echo '<form method="post" action="',$page,'">';
