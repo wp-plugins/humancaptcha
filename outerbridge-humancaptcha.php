@@ -1,16 +1,19 @@
 <?php  
 /* 
-Plugin Name: Outerbridge HumanCaptcha 
+Plugin Name: HumanCaptcha by Outerbridge 
 Plugin URI: http://outerbridge.co.uk/humancaptcha/ 
-Description: HumanCaptcha is a plugin written by Outerbridge which uses questions that require human logic to answer them and which machines cannot easily answer.
+Description: HumanCaptcha uses questions that require human logic to answer them and which machines cannot easily answer.  This plugin is written by Outerbridge.
 Author: Mike Jones a.k.a. Outerbridge Mike
-Version: 1.4
+Version: 1.5
 Author URI: http://outerbridge.co.uk/author/mike/
+Text Domain: humancaptcha
 Tags: captcha, text-based, human, logic, questions, answers
 License: GPL v2
 */
 
 /**
+ *
+ *	v1.5	130816	Made the plugin translation ready and tidied the code a bit
  *
  *	v1.4	130724	Fixed the "add new" option which disappeared if the user deleted all questions
  *
@@ -52,12 +55,20 @@ License: GPL v2
  * 
  */
 
-new obr_humancaptcha;
+$obr_humancaptcha = new obr_humancaptcha;
+
+global $wpdb;
+	
+// define the table name to be used
+global $obr_table_name;
+$obr_table_name = $wpdb->prefix."obr_humancaptcha_qanda";
+global $obr_admin_table_name;
+$obr_admin_table_name = $wpdb->prefix."obr_humancaptcha_admin";
 
 class obr_humancaptcha{
 	
 	// version
-	public $obr_humancaptcha_version = '1.4';
+	public $obr_humancaptcha_version = '1.5';
 	
 	// constructor
 	function obr_humancaptcha() {
@@ -66,6 +77,8 @@ class obr_humancaptcha{
 	
 	function __construct(){
 		register_activation_hook(__FILE__, array(&$this, 'obr_install'));
+		add_action('plugins_loaded', array(&$this, 'obr_update_check'));
+		add_action('plugins_loaded', array(&$this, 'obr_internationalisation'));
 		add_filter('comment_form_default_fields', array(&$this, 'obr_comment_build_form'));
 		add_filter('preprocess_comment', array(&$this, 'obr_comment_validate_answer'), 10, 2);
 		
@@ -83,7 +96,10 @@ class obr_humancaptcha{
 	// functions
 	function obr_install(){
 		global $wpdb;
-		$obr_table_name = $this->obr_table_name();
+		global $obr_table_name;
+		global $obr_admin_table_name;
+		$mysql = '';
+
 		if($wpdb->get_var("SHOW TABLES LIKE '$obr_table_name';") != $obr_table_name){
 			$mysql = "CREATE TABLE $obr_table_name (
 				fld_ref int(11) NOT NULL AUTO_INCREMENT,
@@ -96,7 +112,6 @@ class obr_humancaptcha{
 			$new_rows = $this->obr_insert_default_data();
 		}
 
-		$obr_admin_table_name = $this->obr_admin_table_name();
 		if($wpdb->get_var("SHOW TABLES LIKE '$obr_admin_table_name';") != $obr_admin_table_name){
 			$mysql = "CREATE TABLE $obr_admin_table_name (
 				fld_ref int(11) NOT NULL AUTO_INCREMENT,
@@ -111,21 +126,31 @@ class obr_humancaptcha{
 		}
 
 		// now add in a version number
-		add_option('obr_humancaptcha_version', $obr_humancaptcha_version);
+		add_option('obr_humancaptcha_version', $this->obr_humancaptcha_version);
 		// check for updates
 		$installed_ver = get_option("obr_humancaptcha_version");
-		if($installed_ver != $obr_humancaptcha_version){
-			echo 'Outerbridge humancaptcha updated to version ',$obr_humancaptcha_version;
+		$our_version = $this->obr_humancaptcha_version;
+		if($installed_ver != $our_version){
+			echo '<div id="message" class="updated fade"><p>';
+			printf(__('Outerbridge HumanCaptcha updated to version %s', 'humancaptcha'), $our_version);
+			echo '</p></div>';
 			// update specifics go here
 			require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-			dbDelta($sql);
-			update_option("obr_humancaptcha_version", $obr_humancaptcha_version);
+			dbDelta($mysql);
+			update_option("obr_humancaptcha_version", $our_version);
 		}
 	}
 	
+	function obr_update_check(){
+		// check if there's an update
+		if (get_site_option('obr_humancaptcha_version') != $this->obr_humancaptcha_version){
+			$this->obr_install();
+		}
+	}
+
 	function obr_insert_default_data(){
 		global $wpdb;
-		$obr_table_name = $this->obr_table_name();
+		global $obr_table_name;
 		$default_data = array(
 			array('Which of steel, bread, umbrella, robot or cupboard is edible?', 'bread'),
 			array('Which of 49, four, 7 and sixty is the smallest? Type as a number', '4'),
@@ -145,7 +170,7 @@ class obr_humancaptcha{
 
 	function obr_insert_default_admin_data(){
 		global $wpdb;
-		$obr_admin_table_name = $this->obr_admin_table_name();
+		global $obr_admin_table_name;
 		$default_admin_data = array(
 			// 1 is for comments - default true
 			array(1, 1),
@@ -159,17 +184,10 @@ class obr_humancaptcha{
 		}
 	}
 
-	function obr_table_name(){
-		global $wpdb;
-		$obr_table_name = $wpdb->prefix."obr_humancaptcha_qanda";
-		return $obr_table_name;
-	}	
-	
-	function obr_admin_table_name(){
-		global $wpdb;
-		$obr_admin_table_name = $wpdb->prefix."obr_humancaptcha_admin";
-		return $obr_admin_table_name;
-	}	
+	function obr_internationalisation(){
+		// Willkommen tout le monde...
+		load_plugin_textdomain('humancaptcha', false, dirname(plugin_basename(__FILE__)).'/languages/');
+	}
 	
 	function obr_comment_build_form($fields){
 		global $comments_on;
@@ -183,7 +201,7 @@ class obr_humancaptcha{
 			$answer = $selected['answer'];
 			$_SESSION['obr_answer'] = md5(strtolower(trim($answer)));
 			// use the comment-form-email class as it works better with 2011
-			$fields['obr_hlc'] = '<p class="comment-form-email"><label for="obr_hlc">'.__(stripslashes($question)).'</label> <span class="required">*</span><input id="answer" name="answer" size="30" type="text" aria-required=\'true\' /></p>';
+			$fields['obr_hlc'] = '<p class="comment-form-email"><label for="obr_hlc">'.stripslashes($question).'</label> <span class="required">*</span><input id="answer" name="answer" size="30" type="text" aria-required=\'true\' /></p>';
 			return $fields;
 		}
 	}
@@ -212,18 +230,18 @@ class obr_humancaptcha{
 		$question = $selected['question'];
 		$answer = $selected['answer'];
 		$_SESSION['obr_answer'] = md5(strtolower(trim($answer)));
-		$fields['obr_hlc'] = '<p><label for="obr_hlc">'.__(stripslashes($question)).'<br /><input type="text" name="answer" id="answer" class="input" value="" size="25" tabindex="20" /></label></p>';
+		$fields['obr_hlc'] = '<p><label for="obr_hlc">'.stripslashes($question).'<br /><input type="text" name="answer" id="answer" class="input" value="" size="25" tabindex="20" /></label></p>';
 		echo $fields['obr_hlc'];
 		return $fields;
 	}
 	
 	function obr_header(){
-		echo "\n".'<!-- Using Outerbridge HumanCaptcha.  Find out more at http://outerbridge.co.uk/humancaptcha/ -->'."\n";
+		echo "\n".'<!-- Using Outerbridge HumanCaptcha.  Find out more at http://outerbridge.co.uk/ -->'."\n";
 	}
 
 	function obr_select_question(){
 		global $wpdb;
-		$obr_table_name = $this->obr_table_name();
+		global $obr_table_name;
 		$mysql = "SELECT * FROM $obr_table_name ORDER BY RAND() LIMIT 1;";
 		$row = $wpdb->get_row($mysql);
 		$selected = array('question' => $row->fld_questions, 'answer' => $row->fld_answers);
@@ -258,19 +276,19 @@ class obr_humancaptcha{
 			session_start();
 		}
 		if ((!isset($_POST['answer'])) || ($_POST['answer'] == '')){
-			wp_die(__('Error: please fill the required field (humancaptcha).'));
+			wp_die(__('Error: please fill the required field (humancaptcha).', 'humancaptcha'));
 		}
 		$user_answer = md5(strtolower(trim($_POST['answer'])));
 		$obr_answer = strtolower(trim($_SESSION['obr_answer']));
 		if ($user_answer != $obr_answer){
-			wp_die(__('Error: your answer to the humancaptcha question is incorrect.  Use your browser\'s back button to try again.'));
+			wp_die(__('Error: your answer to the humancaptcha question is incorrect.  Use your browser\'s back button to try again.', 'humancaptcha'));
 		}
 		return true;
 	}	
 
 	function obr_admin_menu(){
 		if (is_super_admin()) {
-			add_submenu_page('plugins.php', 'HumanCaptcha', 'HumanCaptcha', 'manage_options', 'obr-hlc', array(&$this, 'obr_admin'));
+			add_submenu_page('plugins.php', __('HumanCaptcha', 'humancaptcha'), __('HumanCaptcha', 'humancaptcha'), 'manage_options', 'obr-hlc', array(&$this, 'obr_admin'));
 		}
 	}
 	
@@ -280,26 +298,26 @@ class obr_humancaptcha{
 	
 	function obr_qanda_settings($message = null, $question = null, $answer = null){
 		global $wpdb;
-		$obr_table_name = $this->obr_table_name();
+		global $obr_table_name;
 		$mysql = "SELECT * FROM $obr_table_name ORDER BY fld_ref ASC;";
 		$page = 'plugins.php?page=obr-hlc';
 		$num_rows = $wpdb->get_row($mysql);
-		echo '<table style="text-align: center;"><tr><td width="50"><em>Number</em></td><td width="500"><em>Question</em></td><td width="150"><em>Answer</em></td><td>&nbsp;</td><td>&nbsp;</td></tr>';
+		echo '<table style="text-align: center;"><tr><td width="50"><em>'.__('Number', 'humancaptcha').'</em></td><td width="500"><em>'.__('Question', 'humancaptcha').'</em></td><td width="150"><em>'.__('Answer', 'humancaptcha').'</em></td><td>&nbsp;</td><td>&nbsp;</td></tr>';
 		if ($wpdb->num_rows > 0){
 			$counter = 1;
 			foreach($wpdb->get_results($mysql) as $key => $row){
 				echo '<form method="post" action="',$page,'">';
 				echo '<tr><td style="width: 75px;">',$counter,'</td><td><input type="text" name="question" value="',stripslashes($row->fld_questions),'" style="width: 490px; text-align: left;" /></td><td><input type="text" name="answer" value="',stripslashes($row->fld_answers),'" style="width: 140px; text-align: left;" /></td>';
-				echo '<td><input type="hidden" name="ref" value=',$row->fld_ref,' /><input type="submit" name="updateqanda" value="Update Q & A" style="width: 125px;" /></td>';
+				echo '<td><input type="hidden" name="ref" value=',$row->fld_ref,' /><input type="submit" name="updateqanda" value="'.__('Update Q & A', 'humancaptcha').'" style="width: 125px;" /></td>';
 				echo '</form>';
 				echo '<form method="post" action="',$page,'">';
-				echo '<td><input type="hidden" name="ref" value=',$row->fld_ref,' /><input type="submit" onclick="return confirm(\'Are you sure you want to delete this? Press OK to confirm\')" class="delRow" name="deleteqanda" value="Delete Q & A" style="width: 125px;" /></td></tr>';
+				echo '<td><input type="hidden" name="ref" value=',$row->fld_ref,' /><input type="submit" onclick="return confirm(\''.__('Are you sure you want to delete this? Press OK to confirm', 'humancaptcha').'\')" class="delRow" name="deleteqanda" value="'.__('Delete Q & A', 'humancaptcha').'" style="width: 125px;" /></td></tr>';
 				echo '</form>';
 				$counter++;
 			}
 		}
 		echo '<form method="post" action="',$page,'">';
-		echo '<tr><td style="width: 75px;">Add New</td><td><input type="text" name="question" value="';
+		echo '<tr><td style="width: 75px;">'.__('Add New', 'humancaptcha').'</td><td><input type="text" name="question" value="';
 		if (isset($question)){
 			echo $question;
 		}
@@ -308,7 +326,7 @@ class obr_humancaptcha{
 			echo $answer;
 		}
 		echo '" style="width: 140px; text-align: left;" /></td>';
-		echo '<td><input type="submit" name="addqanda" value="Add New Q & A" style="width: 125px;" /></td></tr>';
+		echo '<td><input type="submit" name="addqanda" value="'.__('Add New Q & A', 'humancaptcha').'" style="width: 125px;" /></td></tr>';
 		if (isset($message)){
 			echo '<tr><td colspan="5"><strong>',$message,'</strong></td></tr>';
 		}
@@ -318,51 +336,51 @@ class obr_humancaptcha{
 	
 	function obr_update_qanda($ref, $question, $answer){
 		global $wpdb;
-		$obr_table_name = $this->obr_table_name();
+		global $obr_table_name;
 		$wpdb->update($obr_table_name, array('fld_questions' => $question,'fld_answers' => $answer), array('fld_ref' => $ref));
 	}
 
 	function obr_delete_qanda($ref){
 		global $wpdb;
-		$obr_table_name = $this->obr_table_name();
+		global $obr_table_name;
 		$wpdb->query("DELETE FROM $obr_table_name WHERE fld_ref = $ref;");
 	}
 
 	function obr_add_qanda($question, $answer){
 		global $wpdb;
-		$obr_table_name = $this->obr_table_name();
+		global $obr_table_name;
 		$obr_add_qanda = $wpdb->insert($obr_table_name, array('fld_questions' => $question, 'fld_answers' => $answer));
 	}
 	
 	function obr_admin_settings($message2 = null){
 		global $wpdb;
-		$obr_admin_table_name = $this->obr_admin_table_name();
+		global $obr_admin_table_name;
 		$mysql = "SELECT * FROM $obr_admin_table_name ORDER BY fld_setting ASC;";
 		$page = 'plugins.php?page=obr-hlc';
 		$num_rows = $wpdb->get_row($mysql);
 		if ($wpdb->num_rows == 3){
-			echo '<table style="text-align: center;"><tr><td width="50"><em>Number</em></td><td width="300"><em>Setting</em></td><td width="150"><em>Status</em></td><td>&nbsp;</td></tr>';
+			echo '<table style="text-align: center;"><tr><td width="50"><em>Number</em></td><td width="300"><em>'.__('Setting', 'humancaptcha').'</em></td><td width="150"><em>'.__('Status', 'humancaptcha').'</em></td><td>&nbsp;</td></tr>';
 			$counter = 1;
 			foreach($wpdb->get_results($mysql) as $key => $row){
 				echo '<form method="post" action="',$page,'">';
 				echo '<tr><td style="width: 75px;">',$counter,'</td><td style="text-align: left;">';
 				if (stripslashes($row->fld_setting) == 1){
-					echo 'Use on comments form? <em>Default: On</em>';
+					_e('Use on comments form? <em>Default: On</em>', 'humancaptcha');
 				} elseif (stripslashes($row->fld_setting) == 2){
-					echo 'Use on registration form? <em>Default: Off</em>';
+					_e('Use on registration form? <em>Default: Off</em>', 'humancaptcha');
 				} elseif (stripslashes($row->fld_setting) == 3){
-					echo 'Use on login form? <em>Default: Off</em>';
+					_e('Use on login form? <em>Default: Off</em>', 'humancaptcha');
 				} else {
 					// there shouldn't be any other cases!
 				}
 				echo '</td><td>';
 				if (stripslashes($row->fld_value)){
-					echo '<strong>On</strong><input type="hidden" name="value" value=1 />';
+					echo '<strong>'.__('On', 'humancaptcha').'</strong><input type="hidden" name="value" value=1 />';
 				} else {
-					echo '<strong>Off</strong><input type="hidden" name="value" value=0 />';
+					echo '<strong>'.__('Off', 'humancaptcha').'</strong><input type="hidden" name="value" value=0 />';
 				}
 				echo '</td>';
-				echo '<td><input type="hidden" name="setting" value=',$row->fld_setting,' /><input type="submit" name="togglesetting" value="Toggle Setting" style="width: 125px;" /></td>';
+				echo '<td><input type="hidden" name="setting" value=',$row->fld_setting,' /><input type="submit" name="togglesetting" value="'.__('Toggle Setting', 'humancaptcha').'" style="width: 125px;" /></td>';
 				echo '</form>';
 				$counter++;
 			}
@@ -371,19 +389,19 @@ class obr_humancaptcha{
 			}
 			echo '</table>';
 		} else {
-			echo 'Nothing to display.';
+			_e('Nothing to display.', 'humancaptcha');
 		}
 	}
 	
 	function obr_update_admin_settings($setting, $value){
 		global $wpdb;
-		$obr_admin_table_name = $this->obr_admin_table_name();
+		global $obr_admin_table_name;
 		$wpdb->update($obr_admin_table_name, array('fld_value' => $value), array('fld_setting' => $setting));
 	}
 
 	function obr_get_setting_value($setting){
 		global $wpdb;
-		$obr_admin_table_name = $this->obr_admin_table_name();
+		global $obr_admin_table_name;
 		$mysql = $wpdb->get_row("SELECT * FROM $obr_admin_table_name WHERE fld_setting = $setting LIMIT 1;");
 		$value = $mysql->fld_value;
 		if ($value){
