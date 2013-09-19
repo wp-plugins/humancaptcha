@@ -1,6 +1,6 @@
 === HumanCaptcha by Outerbridge ===
 Contributors: outerbridge
-Author URI: http://outerbridge.co.uk/author/mike/
+Author URI: http://outerbridge.co.uk/
 Tags: captcha, text-based, human, logic, questions, answers
 Requires at least: 3.2
 Tested up to: 3.6
