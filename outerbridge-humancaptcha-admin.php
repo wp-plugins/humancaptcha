@@ -46,6 +46,17 @@ if (isset($_POST['togglesetting'])){
 ?>
 <h1><img src="<?php echo plugins_url('humancaptcha/outerbridge-logo.png'); ?>" width="150" height="107" /><br /><?php _e('HumanCaptcha - Settings', 'humancaptcha'); ?></h1>
 <br />
+<div style="background: #ddd; border: 1px solid #bbb;">
+	<p>Looking for more options?  Look no further than <a href="http://codecanyon.net/item/human-contact-and-captcha-for-wordpress/5756127?ref=outerbridge">Human Contact and Captcha</a>.  It comes with all the goodness of HumanCaptcha plugin, plus the following extras:</p>
+	<ol>
+		<li>Use HumanCaptcha on lost password form (not just login, registration and comments)</li>
+		<li>Contact form included, incorporating HumanCaptcha verification</li>
+		<li>Includes visual shortcode for contact form</li>
+		<li>The ability to import your own questions and answers from a CSV file, for use wherever HumanCaptcha applies</li>
+		<li>Re-written and re-coded admin section, it easily upgrades without losing your existing questions and answers</li>
+	</ol>
+	<p><a href="http://codecanyon.net/item/human-contact-and-captcha-for-wordpress/5756127?ref=outerbridge">Human Contact and Captcha</a> is only available at <a href="http://codecanyon.net/item/human-contact-and-captcha-for-wordpress/5756127?ref=outerbridge">CodeCanyon</a>.</p>
+</div>
 <h3><?php _e('HumanCaptcha Usage', 'humancaptcha'); ?></h3>
 <p><?php _e('You can decide whether or not HumanCaptcha is applied to comment, registration and/or login forms.  Just toggle the settings below.', 'humancaptcha'); ?></p>
 <?php

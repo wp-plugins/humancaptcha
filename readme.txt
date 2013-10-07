@@ -60,6 +60,7 @@ Leave a comment in the support forum and we'll do our best to support.
 == Changelog ==
 
 = 1.X =
+* v1.5.3 (07 Oct 13) Added cross-reference to Human Contact and Captcha
 * v1.5.2 (16 Aug 13) Corrected one missed translation point
 * v1.5.1 (16 Aug 13) Added TH90 of MPW D&D's Persian translation file
 * v1.5 (16 Aug 13) Made the plugin translation ready and tidied the code a bit
@@ -76,6 +77,9 @@ Leave a comment in the support forum and we'll do our best to support.
 
 
 == Upgrade Notice ==
+
+= v1.5.3 =
+* Added cross-reference to Human Contact and Captcha
 
 = v1.5.2 =
 * Corrected one missed translation point
