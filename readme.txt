@@ -24,7 +24,7 @@ Looking for more options?  Look no further than <a href="http://codecanyon.net/i
 <a href="http://codecanyon.net/item/human-contact-and-captcha-for-wordpress/5756127?ref=outerbridge">Human Contact and Captcha</a> is only available at <a href="http://codecanyon.net/item/human-contact-and-captcha-for-wordpress/5756127?ref=outerbridge">CodeCanyon</a>.
 
 
-== About Captchas ==
+** Captchas **
 
 Most captchas are based on the requirement to reproduce a number of randomly-generated characters (which are sometimes blurred, jiggled and/or on a fuzzy background).  HumanCaptcha generates a simple question which the user must answer using logical thought.  HumanCaptcha is much more accessible than standard captchas, which many people find difficult to read or understand.  Visually impaired people are more likely to be able to use HumanCaptcha than a character-based one.
 
