@@ -47,7 +47,7 @@ if (isset($_POST['togglesetting'])){
 <h1><img src="<?php echo plugins_url('humancaptcha/outerbridge-logo.png'); ?>" width="150" height="107" /><br /><?php _e('HumanCaptcha - Settings', 'humancaptcha'); ?></h1>
 <br />
 <div style="background: #ddd; border: 1px solid #bbb;">
-	<p>Looking for more options?  Look no further than <a href="http://codecanyon.net/item/human-contact-and-captcha-for-wordpress/5756127?ref=outerbridge">Human Contact and Captcha</a>.  It comes with all the goodness of HumanCaptcha plugin, plus the following extras:</p>
+	<p>Looking for more options?  Look no further than <a href="http://codecanyon.net/item/human-contact-and-captcha-for-wordpress/5756127?ref=outerbridge">Human Contact and Captcha</a>.  It comes with all the goodness of our HumanCaptcha plugin, plus the following extras:</p>
 	<ol>
 		<li>Use HumanCaptcha on lost password form (not just login, registration and comments)</li>
 		<li>Contact form included, incorporating HumanCaptcha verification</li>

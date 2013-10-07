@@ -11,7 +11,20 @@ HumanCaptcha is plugin written by Outerbridge which uses questions that require 
 
 == Description ==
 
-HumanCaptcha is plugin written by Outerbridge which uses questions that require human logic to answer them and which machines cannot easily answer.  
+HumanCaptcha add questions that require human logic to answer them (and which machines cannot easily answer) to WordPress' login form, comments form and registration form.
+
+Looking for more options?  Look no further than <a href="http://codecanyon.net/item/human-contact-and-captcha-for-wordpress/5756127?ref=outerbridge">Human Contact and Captcha</a>.  It comes with all the goodness of our HumanCaptcha plugin, plus the following extras:
+<ol>
+	<li>Use HumanCaptcha on lost password form (not just login, registration and comments)</li>
+	<li>Contact form included, incorporating HumanCaptcha verification</li>
+	<li>Includes visual shortcode for contact form</li>
+	<li>The ability to import your own questions and answers from a CSV file, for use wherever HumanCaptcha applies</li>
+	<li>Re-written and re-coded admin section, it easily upgrades without losing your existing questions and answers</li>
+</ol>
+<a href="http://codecanyon.net/item/human-contact-and-captcha-for-wordpress/5756127?ref=outerbridge">Human Contact and Captcha</a> is only available at <a href="http://codecanyon.net/item/human-contact-and-captcha-for-wordpress/5756127?ref=outerbridge">CodeCanyon</a>.
+
+
+== About Captchas ==
 
 Most captchas are based on the requirement to reproduce a number of randomly-generated characters (which are sometimes blurred, jiggled and/or on a fuzzy background).  HumanCaptcha generates a simple question which the user must answer using logical thought.  HumanCaptcha is much more accessible than standard captchas, which many people find difficult to read or understand.  Visually impaired people are more likely to be able to use HumanCaptcha than a character-based one.
 
