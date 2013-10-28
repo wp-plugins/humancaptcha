@@ -2,8 +2,8 @@
 Contributors: outerbridge
 Author URI: http://outerbridge.co.uk/
 Tags: captcha, text-based, human, logic, questions, answers
-Requires at least: 3.2
-Tested up to: 3.6
+Requires at least: 3.6
+Tested up to: 3.7
 Stable tag: trunk
 
 HumanCaptcha is plugin written by Outerbridge which uses questions that require human logic to answer them and which machines cannot easily answer.
