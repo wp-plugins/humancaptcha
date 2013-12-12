@@ -3,7 +3,7 @@ Contributors: outerbridge
 Author URI: http://outerbridge.co.uk/
 Tags: captcha, text-based, human, logic, questions, answers
 Requires at least: 3.6
-Tested up to: 3.7
+Tested up to: 3.8
 Stable tag: trunk
 
 HumanCaptcha is plugin written by Outerbridge which uses questions that require human logic to answer them and which machines cannot easily answer.
@@ -73,6 +73,7 @@ Leave a comment in the support forum and we'll do our best to support.
 == Changelog ==
 
 = 1.X =
+* v1.5.4 (12 Dec 13) Tested and stable up to WP3.8 and updated author name
 * v1.5.3 (07 Oct 13) Added cross-reference to Human Contact and Captcha
 * v1.5.2 (16 Aug 13) Corrected one missed translation point
 * v1.5.1 (16 Aug 13) Added TH90 of MPW D&D's Persian translation file
@@ -90,6 +91,9 @@ Leave a comment in the support forum and we'll do our best to support.
 
 
 == Upgrade Notice ==
+
+= v1.5.4 =
+* Tested and stable up to WP3.8 and updated author name
 
 = v1.5.3 =
 * Added cross-reference to Human Contact and Captcha
