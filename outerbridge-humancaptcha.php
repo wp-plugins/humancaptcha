@@ -3,7 +3,7 @@
 Plugin Name: HumanCaptcha by Outerbridge 
 Plugin URI: http://outerbridge.co.uk/
 Description: HumanCaptcha uses questions that require human logic to answer them and which machines cannot easily answer.  This plugin is written by Outerbridge.
-Author: Outerbridge Mike
+Author: Outerbridge
 Version: 1.5.4
 Author URI: http://outerbridge.co.uk/
 Text Domain: humancaptcha
