@@ -2,8 +2,8 @@
 $message = '';
 $message2 = '';
 if (isset($_POST['updateqanda'])){
-	$question = mysql_real_escape_string(trim($_POST['question']));
-	$answer = mysql_real_escape_string(trim($_POST['answer']));
+	$question = esc_attr(trim($_POST['question']));
+	$answer = esc_attr(trim($_POST['answer']));
 	$ref = abs(intval($_POST['ref'])); // it's a positive integer
 	if ($question && $answer && $ref){
 		$message = __('Question and/or answer updated.', 'humancaptcha');
@@ -22,8 +22,8 @@ if (isset($_POST['deleteqanda'])){
 	}
 }	
 if (isset($_POST['addqanda'])){
-	$question = mysql_real_escape_string(trim($_POST['question']));
-	$answer = mysql_real_escape_string(trim($_POST['answer']));
+	$question = esc_attr(trim($_POST['question']));
+	$answer = esc_attr(trim($_POST['answer']));
 	if ($question && $answer){
 		$message = __('New question and answer added.', 'humancaptcha');
 		$this->obr_add_qanda($question, $answer);
@@ -32,7 +32,7 @@ if (isset($_POST['addqanda'])){
 	}
 }
 if (isset($_POST['togglesetting'])){
-	$setting = mysql_real_escape_string(trim($_POST['setting']));
+	$setting = esc_attr(trim($_POST['setting']));
 	$value = intval($_POST['value']);
 	if ($setting && (($value == 0) || ($value == 1))){
 		$message2 = __('Setting updated.', 'humancaptcha');
