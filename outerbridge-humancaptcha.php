@@ -4,7 +4,7 @@ Plugin Name: HumanCaptcha by Outerbridge
 Plugin URI: http://outerbridge.co.uk/
 Description: HumanCaptcha uses questions that require human logic to answer them and which machines cannot easily answer.  This plugin is written by Outerbridge.
 Author: Outerbridge
-Version: 1.6
+Version: 1.7
 Author URI: http://outerbridge.co.uk/
 Text Domain: humancaptcha
 Tags: captcha, text-based, human, logic, questions, answers
@@ -13,6 +13,8 @@ License: GPL v2
 
 /**
  *
+ *	v1.7	140805	Updated registration form processing to use the registration_errors filter as suggested by bml13
+ * 
  *	v1.6	140430	Removed mysql_real_escape_string() as recommended for WP3.9
  * 
  *	v1.5.4	131212	Tested and stable up to WP3.8 and updated author name
@@ -70,15 +72,15 @@ $obr_humancaptcha = new obr_humancaptcha;
 global $wpdb;
 	
 // define the table name to be used
-global $obr_table_name;
-$obr_table_name = $wpdb->prefix."obr_humancaptcha_qanda";
-global $obr_admin_table_name;
-$obr_admin_table_name = $wpdb->prefix."obr_humancaptcha_admin";
+global $obr_hc_table_name;
+$obr_hc_table_name = $wpdb->prefix."obr_humancaptcha_qanda";
+global $obr_hc_admin_table_name;
+$obr_hc_admin_table_name = $wpdb->prefix."obr_humancaptcha_admin";
 
 class obr_humancaptcha{
 	
 	// version
-	public $obr_humancaptcha_version = '1.6';
+	public $obr_humancaptcha_version = '1.7';
 	
 	// constructor
 	function obr_humancaptcha() {
@@ -86,32 +88,32 @@ class obr_humancaptcha{
 	}
 	
 	function __construct(){
-		register_activation_hook(__FILE__, array(&$this, 'obr_install'));
-		add_action('plugins_loaded', array(&$this, 'obr_update_check'));
-		add_action('plugins_loaded', array(&$this, 'obr_internationalisation'));
-		add_filter('comment_form_default_fields', array(&$this, 'obr_comment_build_form'));
-		add_filter('preprocess_comment', array(&$this, 'obr_comment_validate_answer'), 10, 2);
+		register_activation_hook(__FILE__, array($this, 'obr_install'));
+		add_action('plugins_loaded', array($this, 'obr_update_check'));
+		add_action('plugins_loaded', array($this, 'obr_internationalisation'));
+		add_filter('comment_form_default_fields', array($this, 'obr_comment_build_form'));
+		add_filter('preprocess_comment', array($this, 'obr_comment_validate_answer'), 10, 2);
 		
-		add_action('register_form', array(&$this, 'obr_register_build_form'));
-		add_filter('register_post', array(&$this, 'obr_register_validate_answer'), 10, 2);
+		add_action('register_form', array($this, 'obr_register_build_form'));
+		add_filter('registration_errors', array($this,'obr_register_validate_answer'), 10, 3);
 
-		add_action('login_form', array(&$this, 'obr_login_build_form'));
-		add_filter('wp_authenticate', array(&$this, 'obr_login_validate_answer'), 10, 2);
+		add_action('login_form', array($this, 'obr_login_build_form'));
+		add_filter('wp_authenticate', array($this, 'obr_login_validate_answer'), 10, 2);
 
-		add_action('wp_head', array(&$this, 'obr_header'));
-		add_action('admin_menu', array(&$this, 'obr_admin_menu'));
-		add_action('init', array(&$this, 'obr_init'));
+		add_action('wp_head', array($this, 'obr_header'));
+		add_action('admin_menu', array($this, 'obr_admin_menu'));
+		add_action('init', array($this, 'obr_init'));
 	}
 
 	// functions
 	function obr_install(){
 		global $wpdb;
-		global $obr_table_name;
-		global $obr_admin_table_name;
+		global $obr_hc_table_name;
+		global $obr_hc_admin_table_name;
 		$mysql = '';
 
-		if($wpdb->get_var("SHOW TABLES LIKE '$obr_table_name';") != $obr_table_name){
-			$mysql = "CREATE TABLE $obr_table_name (
+		if($wpdb->get_var("SHOW TABLES LIKE '$obr_hc_table_name';") != $obr_hc_table_name){
+			$mysql = "CREATE TABLE $obr_hc_table_name (
 				fld_ref int(11) NOT NULL AUTO_INCREMENT,
 				fld_questions varchar(100) NOT NULL,
 				fld_answers varchar(20) NOT NULL,
@@ -122,8 +124,8 @@ class obr_humancaptcha{
 			$new_rows = $this->obr_insert_default_data();
 		}
 
-		if($wpdb->get_var("SHOW TABLES LIKE '$obr_admin_table_name';") != $obr_admin_table_name){
-			$mysql = "CREATE TABLE $obr_admin_table_name (
+		if($wpdb->get_var("SHOW TABLES LIKE '$obr_hc_admin_table_name';") != $obr_hc_admin_table_name){
+			$mysql = "CREATE TABLE $obr_hc_admin_table_name (
 				fld_ref int(11) NOT NULL AUTO_INCREMENT,
 				fld_setting int(11) NOT NULL,
 				fld_value boolean NOT NULL DEFAULT 0,
@@ -160,7 +162,7 @@ class obr_humancaptcha{
 
 	function obr_insert_default_data(){
 		global $wpdb;
-		global $obr_table_name;
+		global $obr_hc_table_name;
 		$default_data = array(
 			array('Which of steel, bread, umbrella, robot or cupboard is edible?', 'bread'),
 			array('Which of 49, four, 7 and sixty is the smallest? Type as a number', '4'),
@@ -174,13 +176,13 @@ class obr_humancaptcha{
 			array('Which is rounder: square, triangle, rectangle, circle, hexagon or pentagon?', 'circle')
 		);
 		foreach ($default_data as $row){
-			$new_row = $wpdb->insert($obr_table_name, array('fld_questions' => $row[0], 'fld_answers' => $row[1]));
+			$new_row = $wpdb->insert($obr_hc_table_name, array('fld_questions' => $row[0], 'fld_answers' => $row[1]));
 		}
 	}
 
 	function obr_insert_default_admin_data(){
 		global $wpdb;
-		global $obr_admin_table_name;
+		global $obr_hc_admin_table_name;
 		$default_admin_data = array(
 			// 1 is for comments - default true
 			array(1, 1),
@@ -190,7 +192,7 @@ class obr_humancaptcha{
 			array(3, 0)
 		);
 		foreach ($default_admin_data as $row){
-			$new_row = $wpdb->insert($obr_admin_table_name, array('fld_setting' => $row[0], 'fld_value' => $row[1]));
+			$new_row = $wpdb->insert($obr_hc_admin_table_name, array('fld_setting' => $row[0], 'fld_value' => $row[1]));
 		}
 	}
 
@@ -251,8 +253,8 @@ class obr_humancaptcha{
 
 	function obr_select_question(){
 		global $wpdb;
-		global $obr_table_name;
-		$mysql = "SELECT * FROM $obr_table_name ORDER BY RAND() LIMIT 1;";
+		global $obr_hc_table_name;
+		$mysql = "SELECT * FROM $obr_hc_table_name ORDER BY RAND() LIMIT 1;";
 		$row = $wpdb->get_row($mysql);
 		$selected = array('question' => $row->fld_questions, 'answer' => $row->fld_answers);
 		return $selected;
@@ -267,11 +269,20 @@ class obr_humancaptcha{
 		return $commentdata;
 	}
 
-	function obr_register_validate_answer($user_login, $user_email){
-		global $register_on;
-		if (($user_login != '') && ($user_email != '') && $register_on){
-			$this->obr_validate_answer();
+	function obr_register_validate_answer($errors, $sanitized_user_login, $user_email){
+		if (!session_id()){
+			session_start();
 		}
+		if ((!isset($_POST['answer'])) || ($_POST['answer'] == '')){
+			$errors->add('obr_error', __('Error: please fill the required field (humancaptcha).', 'humancaptcha'));
+		} else {
+			$user_answer = md5(strtolower(trim($_POST['answer'])));
+			$obr_answer = strtolower(trim($_SESSION['obr_answer']));
+			if ($user_answer != $obr_answer){
+				$errors->add('obr_error', __('Error: your answer to the humancaptcha question is incorrect.', 'humancaptcha'));
+			}
+		}
+		return $errors;
 	}
 	
 	function obr_login_validate_answer($user_login, $user_password){
@@ -298,7 +309,7 @@ class obr_humancaptcha{
 
 	function obr_admin_menu(){
 		if (is_super_admin()) {
-			add_submenu_page('plugins.php', __('HumanCaptcha', 'humancaptcha'), __('HumanCaptcha', 'humancaptcha'), 'manage_options', 'obr-hlc', array(&$this, 'obr_admin'));
+			add_submenu_page('plugins.php', __('HumanCaptcha', 'humancaptcha'), __('HumanCaptcha', 'humancaptcha'), 'manage_options', 'obr-hlc', array($this, 'obr_admin'));
 		}
 	}
 	
@@ -308,8 +319,8 @@ class obr_humancaptcha{
 	
 	function obr_qanda_settings($message = null, $question = null, $answer = null){
 		global $wpdb;
-		global $obr_table_name;
-		$mysql = "SELECT * FROM $obr_table_name ORDER BY fld_ref ASC;";
+		global $obr_hc_table_name;
+		$mysql = "SELECT * FROM $obr_hc_table_name ORDER BY fld_ref ASC;";
 		$page = 'plugins.php?page=obr-hlc';
 		$num_rows = $wpdb->get_row($mysql);
 		echo '<table style="text-align: center;"><tr><td width="50"><em>'.__('Number', 'humancaptcha').'</em></td><td width="500"><em>'.__('Question', 'humancaptcha').'</em></td><td width="150"><em>'.__('Answer', 'humancaptcha').'</em></td><td>&nbsp;</td><td>&nbsp;</td></tr>';
@@ -346,26 +357,26 @@ class obr_humancaptcha{
 	
 	function obr_update_qanda($ref, $question, $answer){
 		global $wpdb;
-		global $obr_table_name;
-		$wpdb->update($obr_table_name, array('fld_questions' => $question,'fld_answers' => $answer), array('fld_ref' => $ref));
+		global $obr_hc_table_name;
+		$wpdb->update($obr_hc_table_name, array('fld_questions' => $question,'fld_answers' => $answer), array('fld_ref' => $ref));
 	}
 
 	function obr_delete_qanda($ref){
 		global $wpdb;
-		global $obr_table_name;
-		$wpdb->query("DELETE FROM $obr_table_name WHERE fld_ref = $ref;");
+		global $obr_hc_table_name;
+		$wpdb->query("DELETE FROM $obr_hc_table_name WHERE fld_ref = $ref;");
 	}
 
 	function obr_add_qanda($question, $answer){
 		global $wpdb;
-		global $obr_table_name;
-		$obr_add_qanda = $wpdb->insert($obr_table_name, array('fld_questions' => $question, 'fld_answers' => $answer));
+		global $obr_hc_table_name;
+		$obr_add_qanda = $wpdb->insert($obr_hc_table_name, array('fld_questions' => $question, 'fld_answers' => $answer));
 	}
 	
 	function obr_admin_settings($message2 = null){
 		global $wpdb;
-		global $obr_admin_table_name;
-		$mysql = "SELECT * FROM $obr_admin_table_name ORDER BY fld_setting ASC;";
+		global $obr_hc_admin_table_name;
+		$mysql = "SELECT * FROM $obr_hc_admin_table_name ORDER BY fld_setting ASC;";
 		$page = 'plugins.php?page=obr-hlc';
 		$num_rows = $wpdb->get_row($mysql);
 		if ($wpdb->num_rows == 3){
@@ -405,14 +416,14 @@ class obr_humancaptcha{
 	
 	function obr_update_admin_settings($setting, $value){
 		global $wpdb;
-		global $obr_admin_table_name;
-		$wpdb->update($obr_admin_table_name, array('fld_value' => $value), array('fld_setting' => $setting));
+		global $obr_hc_admin_table_name;
+		$wpdb->update($obr_hc_admin_table_name, array('fld_value' => $value), array('fld_setting' => $setting));
 	}
 
 	function obr_get_setting_value($setting){
 		global $wpdb;
-		global $obr_admin_table_name;
-		$mysql = $wpdb->get_row("SELECT * FROM $obr_admin_table_name WHERE fld_setting = $setting LIMIT 1;");
+		global $obr_hc_admin_table_name;
+		$mysql = $wpdb->get_row("SELECT * FROM $obr_hc_admin_table_name WHERE fld_setting = $setting LIMIT 1;");
 		$value = $mysql->fld_value;
 		if ($value){
 			return $value;

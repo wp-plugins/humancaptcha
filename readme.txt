@@ -73,6 +73,7 @@ Leave a comment in the support forum and we'll do our best to support.
 == Changelog ==
 
 = 1.X =
+* v1.7 (05 Aug 14) Updated registration form processing to use the registration_errors filter as suggested by bml13
 * 1.6 (30 Apr 14) Removed mysql_real_escape_string() as recommended for WP3.9
 * v1.5.4 (12 Dec 13) Tested and stable up to WP3.8 and updated author name
 * v1.5.3 (07 Oct 13) Added cross-reference to Human Contact and Captcha
@@ -92,6 +93,9 @@ Leave a comment in the support forum and we'll do our best to support.
 
 
 == Upgrade Notice ==
+
+= v1.7 =
+* Updated registration form processing to use the registration_errors filter as suggested by bml13
 
 = v1.6 =
 * Removed mysql_real_escape_string() as recommended for WP3.9 
