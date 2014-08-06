@@ -4,7 +4,7 @@ Plugin Name: HumanCaptcha by Outerbridge
 Plugin URI: http://outerbridge.co.uk/
 Description: HumanCaptcha uses questions that require human logic to answer them and which machines cannot easily answer.  This plugin is written by Outerbridge.
 Author: Outerbridge
-Version: 1.7
+Version: 1.8
 Author URI: http://outerbridge.co.uk/
 Text Domain: humancaptcha
 Tags: captcha, text-based, human, logic, questions, answers
@@ -13,34 +13,22 @@ License: GPL v2
 
 /**
  *
+ *	v1.8	140806	Updated collation and charset options
+ * 
  *	v1.7	140805	Updated registration form processing to use the registration_errors filter as suggested by bml13
- * 
  *	v1.6	140430	Removed mysql_real_escape_string() as recommended for WP3.9
- * 
  *	v1.5.4	131212	Tested and stable up to WP3.8 and updated author name
- *
  *	v1.5.3	131007	Added cross-reference to Human Contact and Captcha.
- *
  *	v1.5.2	130816	Corrected one missed translation point
- *
  *	v1.5.1	130816	Added TH90 of MPW D&D's Persian translation file
- *
  *	v1.5	130816	Made the plugin translation ready and tidied the code a bit
- *
  *	v1.4	130724	Fixed the "add new" option which disappeared if the user deleted all questions
- *
  *	v1.3	130723	Fixed UTF8 issue
- *
  *	v1.2.1	120105	No changes. v1.2 didn't commit properly.
- *
  *	v1.2	120105	Updated obr_admin_menu function to check against 'manage_options' rather than 'edit_plugins'.  This allows for "define('DISALLOW_FILE_EDIT', true);" being enabled in wp-config.php
- *
  *	v1.1	120103	Tested and stable up to WP3.3
- *
  *	v1.0	110930	HumanCaptcha now added to registration and login forms as well as comments form.  Toggles added to admin menu to allow users to decide where HumanCaptcha is applied.
- *
  *	v0.2	110830	Fixed session_start issue
- *
  *	v0.1	110825	Initial Release
  *
  */
@@ -80,7 +68,7 @@ $obr_hc_admin_table_name = $wpdb->prefix."obr_humancaptcha_admin";
 class obr_humancaptcha{
 	
 	// version
-	public $obr_humancaptcha_version = '1.7';
+	public $obr_humancaptcha_version = '1.8';
 	
 	// constructor
 	function obr_humancaptcha() {
@@ -112,13 +100,21 @@ class obr_humancaptcha{
 		global $obr_hc_admin_table_name;
 		$mysql = '';
 
+		$charset_collate = '';
+		if (!empty($wpdb->charset)){
+			$charset_collate = "DEFAULT CHARACTER SET $wpdb->charset";
+		}
+		if (!empty($wpdb->collate)){
+			$charset_collate .= " COLLATE $wpdb->collate";
+		}
+
 		if($wpdb->get_var("SHOW TABLES LIKE '$obr_hc_table_name';") != $obr_hc_table_name){
 			$mysql = "CREATE TABLE $obr_hc_table_name (
 				fld_ref int(11) NOT NULL AUTO_INCREMENT,
 				fld_questions varchar(100) NOT NULL,
 				fld_answers varchar(20) NOT NULL,
 				UNIQUE KEY fld_ref (fld_ref)
-			);";
+			) $charset_collate;";
 			require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 			dbDelta($mysql);
 			$new_rows = $this->obr_insert_default_data();
@@ -131,7 +127,7 @@ class obr_humancaptcha{
 				fld_value boolean NOT NULL DEFAULT 0,
 				UNIQUE KEY fld_setting (fld_setting),
 				UNIQUE KEY fld_ref (fld_ref)
-			);";
+			) $charset_collate;";
 			require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 			dbDelta($mysql);
 			$new_rows = $this->obr_insert_default_admin_data();
