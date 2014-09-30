@@ -6,22 +6,25 @@ Requires at least: 3.9
 Tested up to: 4.0
 Stable tag: trunk
 
-HumanCaptcha is plugin written by Outerbridge which uses questions that require human logic to answer them and which machines cannot easily answer.
+HumanCaptcha is a Captcha that uses questions that require human logic to answer them to the WordPress login form, comments form and registration form. Machines cannot easily answer these types of questions, so using HumanCaptcha is a great way to reduce spam.
 
 
 == Description ==
 
-HumanCaptcha add questions that require human logic to answer them (and which machines cannot easily answer) to WordPress' login form, comments form and registration form.
+Most captchas are based on the requirement to reproduce a number of randomly-generated characters (which are sometimes blurred, jiggled and/or on a fuzzy background). HumanCaptcha generates a simple question which the user must answer using logical thought. HumanCaptcha is much more accessible than standard captchas (which many people find difficult to read or understand). Visually impaired people are much more likely to be able to use HumanCaptcha than a character-based one.
 
-Looking for more options?  Look no further than <a href="http://codecanyon.net/item/human-contact-and-captcha-for-wordpress/5756127?ref=outerbridge">Human Contact and Captcha</a>.  It comes with all the goodness of our HumanCaptcha plugin, plus the following extras:
+<blockquote>
+<h4>Learn more about <a href="http://codecanyon.net/item/human-contact-and-captcha-for-wordpress/5756127?ref=outerbridge">Human Contact & Captcha Premium version</a></h4>
+Looking for more options? Look no further than <a href="http://codecanyon.net/item/human-contact-and-captcha-for-wordpress/5756127?ref=outerbridge">Human Contact and Captcha</a>. It comes with all the goodness of the free HumanCaptcha plugin, plus the following extras:
 <ol>
-	<li>Use HumanCaptcha on lost password form (not just login, registration and comments)</li>
-	<li>Contact form included, incorporating HumanCaptcha verification</li>
-	<li>Includes visual shortcode for contact form</li>
-	<li>The ability to import your own questions and answers from a CSV file, for use wherever HumanCaptcha applies</li>
-	<li>Re-written and re-coded admin section, it easily upgrades without losing your existing questions and answers</li>
+<li>Use HumanCaptcha on your lost password form (not just login, registration and comments)</li>
+<li>Contact form included, incorporating the HumanCaptcha verification</li>
+<li>Includes visual editor shortcode for contact form</li>
+<li>The ability to import your own questions and answers from a CSV file, for use wherever HumanCaptcha applies</li>
+<li>Enhanced admin section; easily upgrades without losing your existing questions and answers</li>
 </ol>
-<a href="http://codecanyon.net/item/human-contact-and-captcha-for-wordpress/5756127?ref=outerbridge">Human Contact and Captcha</a> is only available at <a href="http://codecanyon.net/item/human-contact-and-captcha-for-wordpress/5756127?ref=outerbridge">CodeCanyon</a>.
+<a href="http://codecanyon.net/item/human-contact-and-captcha-for-wordpress/5756127?ref=outerbridge">Human Contact and Captcha</a> is exclusively available at <a href="http://codecanyon.net/item/human-contact-and-captcha-for-wordpress/5756127?ref=outerbridge">CodeCanyon</a>.
+</blockquote>
 
 
 ** Captchas **
@@ -42,7 +45,9 @@ CAPTCHAs are useful for improving security in a number of situations, for exampl
 
 = Credits =
 
-Many thanks to TH90 of MPW D&D for the Persian translation files (fa_IR) Language: Persian, Country: Iran.
+Many thanks to:
+TH90 (https://wordpress.org/support/profile/th90) of MPW D&D for the Persian translation files (fa_IR). Language: Persian, Country: Iran.
+Dayl (http://dayl.ru) in Санкт-Петербург for the Russian translation files.  Language: Russian, Country: Russia.
 
 
 == Installation ==
@@ -73,6 +78,7 @@ Leave a comment in the support forum and we'll do our best to support.
 == Changelog ==
 
 = 1.X =
+* v2.0 (30 Sep 14) Added Russian translation files
 * v1.9 (29 Aug 14) Tested and stable up to WP4.0
 * v1.8 (06 Aug 14) Updated collation and charset options
 * v1.7 (05 Aug 14) Updated registration form processing to use the registration_errors filter as suggested by bml13
@@ -95,6 +101,9 @@ Leave a comment in the support forum and we'll do our best to support.
 
 
 == Upgrade Notice ==
+
+= v2.0 =
+* Added Russian translation files
 
 = v1.9 =
 * Tested and stable up to WP4.0

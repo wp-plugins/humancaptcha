@@ -4,7 +4,7 @@ Plugin Name: HumanCaptcha by Outerbridge
 Plugin URI: http://outerbridge.co.uk/
 Description: HumanCaptcha uses questions that require human logic to answer them and which machines cannot easily answer.  This plugin is written by Outerbridge.
 Author: Outerbridge
-Version: 1.9
+Version: 2.0
 Author URI: http://outerbridge.co.uk/
 Text Domain: humancaptcha
 Tags: captcha, text-based, human, logic, questions, answers
@@ -13,8 +13,9 @@ License: GPL v2
 
 /**
  *
- *	v1.9	140829	Tested and stable up to WP4.0
+ *	v2.0	140930	Added Russian translation files
  *
+ *	v1.9	140829	Tested and stable up to WP4.0
  *	v1.8	140806	Updated collation and charset options
  *	v1.7	140805	Updated registration form processing to use the registration_errors filter as suggested by bml13
  *	v1.6	140430	Removed mysql_real_escape_string() as recommended for WP3.9
@@ -34,28 +35,6 @@ License: GPL v2
  *
  */
 
-/**
- * HumanCaptcha is plugin written by Outerbridge which uses questions that require human logic to answer them and which
- * machines cannot easily answer.  Most captchas are based on the requirement to reproduce a number of randomly-generated
- * characters (which are sometimes blurred, jiggled and/or on a fuzzy background).  HumanCaptcha generates a simple
- * question which the user must answer using logical thought.  HumanCaptcha is much more accessible than standard captchas,
- * which many people find difficult to read or understand.  Visually impaired people are more likely to be able to use
- * HumanCaptcha than a character-based one.
- * 
- * CAPTCHAs are useful for improving security in a number of situations, for example:
- * 1. Reducing Comment Spam in Blogs
- * 	  Most bloggers will have come across programs that submit spam comments, often with the aim of improving the search
- * 	  engine ranking of a website.  By using a CAPTCHA, only humans can enter comments on your blog, and people do not need
- * 	  to sign up before they enter a comment.
- * 2. Protecting Email Addresses From Scrapers
- * 	  Spammers crawl the web looking for e-mail addresses rendered in text. CAPTCHAs can hide your e-mail address from web
- * 	  scrapers, by requiring users to solve a CAPTCHA before revealing your e-mail. 
- * 3. Deterring Viruses, Worms and Spam 
- * 	  CAPTCHAs may reduce the likelihood of e-mailed viruses, worms and spam, by only accepting an e-mail if it has been
- *    established that there is a human behind the sending computer.
- * 
- */
-
 $obr_humancaptcha = new obr_humancaptcha;
 
 global $wpdb;
@@ -69,7 +48,7 @@ $obr_hc_admin_table_name = $wpdb->prefix."obr_humancaptcha_admin";
 class obr_humancaptcha{
 	
 	// version
-	public $obr_humancaptcha_version = '1.9';
+	public $obr_humancaptcha_version = '2.0';
 	
 	// constructor
 	function obr_humancaptcha() {
