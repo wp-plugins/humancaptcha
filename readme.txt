@@ -2,8 +2,8 @@
 Contributors: outerbridge
 Author URI: http://outerbridge.co.uk/
 Tags: captcha, text-based, human, logic, questions, answers
-Requires at least: 3.9
-Tested up to: 4.0
+Requires at least: 4.1
+Tested up to: 4.1
 Stable tag: trunk
 
 HumanCaptcha is a Captcha that uses questions that require human logic to answer them to the WordPress login form, comments form and registration form. Machines cannot easily answer these types of questions, so using HumanCaptcha is a great way to reduce spam.
