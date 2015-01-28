@@ -13,20 +13,6 @@ HumanCaptcha is a Captcha that uses questions that require human logic to answer
 
 Most captchas are based on the requirement to reproduce a number of randomly-generated characters (which are sometimes blurred, jiggled and/or on a fuzzy background). HumanCaptcha generates a simple question which the user must answer using logical thought. HumanCaptcha is much more accessible than standard captchas (which many people find difficult to read or understand). Visually impaired people are much more likely to be able to use HumanCaptcha than a character-based one.
 
-<blockquote>
-<h4>Learn more about <a href="http://codecanyon.net/item/human-contact-and-captcha-for-wordpress/5756127?ref=outerbridge">Human Contact & Captcha Premium version</a></h4>
-Looking for more options? Look no further than <a href="http://codecanyon.net/item/human-contact-and-captcha-for-wordpress/5756127?ref=outerbridge">Human Contact and Captcha</a>. It comes with all the goodness of the free HumanCaptcha plugin, plus the following extras:
-<ol>
-<li>Use HumanCaptcha on your lost password form (not just login, registration and comments)</li>
-<li>Contact form included, incorporating the HumanCaptcha verification</li>
-<li>Includes visual editor shortcode for contact form</li>
-<li>The ability to import your own questions and answers from a CSV file, for use wherever HumanCaptcha applies</li>
-<li>Enhanced admin section; easily upgrades without losing your existing questions and answers</li>
-</ol>
-<a href="http://codecanyon.net/item/human-contact-and-captcha-for-wordpress/5756127?ref=outerbridge">Human Contact and Captcha</a> is exclusively available at <a href="http://codecanyon.net/item/human-contact-and-captcha-for-wordpress/5756127?ref=outerbridge">CodeCanyon</a>.
-</blockquote>
-
-
 ** Captchas **
 
 Most captchas are based on the requirement to reproduce a number of randomly-generated characters (which are sometimes blurred, jiggled and/or on a fuzzy background).  HumanCaptcha generates a simple question which the user must answer using logical thought.  HumanCaptcha is much more accessible than standard captchas, which many people find difficult to read or understand.  Visually impaired people are more likely to be able to use HumanCaptcha than a character-based one.
@@ -78,6 +64,7 @@ Leave a comment in the support forum and we'll do our best to support.
 == Changelog ==
 
 = 1.X =
+* v2.1 (28 Jan 15) General code tidy plus remove references to HCAC
 * v2.0 (30 Sep 14) Added Russian translation files
 * v1.9 (29 Aug 14) Tested and stable up to WP4.0
 * v1.8 (06 Aug 14) Updated collation and charset options
@@ -101,6 +88,9 @@ Leave a comment in the support forum and we'll do our best to support.
 
 
 == Upgrade Notice ==
+
+= v2.1 =
+* General code tidy plus remove references to HCAC
 
 = v2.0 =
 * Added Russian translation files

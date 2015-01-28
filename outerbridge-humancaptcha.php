@@ -4,7 +4,7 @@ Plugin Name: HumanCaptcha by Outerbridge
 Plugin URI: http://outerbridge.co.uk/
 Description: HumanCaptcha uses questions that require human logic to answer them and which machines cannot easily answer.  This plugin is written by Outerbridge.
 Author: Outerbridge
-Version: 2.0
+Version: 2.1
 Author URI: http://outerbridge.co.uk/
 Text Domain: humancaptcha
 Tags: captcha, text-based, human, logic, questions, answers
@@ -13,8 +13,9 @@ License: GPL v2
 
 /**
  *
- *	v2.0	140930	Added Russian translation files
+ *	v2.1	150130	General code tidy plus remove references to HCAC
  *
+ *	v2.0	140930	Added Russian translation files
  *	v1.9	140829	Tested and stable up to WP4.0
  *	v1.8	140806	Updated collation and charset options
  *	v1.7	140805	Updated registration form processing to use the registration_errors filter as suggested by bml13
@@ -41,19 +42,14 @@ global $wpdb;
 	
 // define the table name to be used
 global $obr_hc_table_name;
-$obr_hc_table_name = $wpdb->prefix."obr_humancaptcha_qanda";
+$obr_hc_table_name = "{$wpdb->prefix}obr_humancaptcha_qanda";
 global $obr_hc_admin_table_name;
-$obr_hc_admin_table_name = $wpdb->prefix."obr_humancaptcha_admin";
+$obr_hc_admin_table_name = "{$wpdb->prefix}obr_humancaptcha_admin";
 
 class obr_humancaptcha{
 	
 	// version
-	public $obr_humancaptcha_version = '2.0';
-	
-	// constructor
-	function obr_humancaptcha() {
-		$this->__construct();
-	}
+	public $obr_humancaptcha_version = '2.1';
 	
 	function __construct(){
 		register_activation_hook(__FILE__, array($this, 'obr_install'));
@@ -68,7 +64,6 @@ class obr_humancaptcha{
 		add_action('login_form', array($this, 'obr_login_build_form'));
 		add_filter('wp_authenticate', array($this, 'obr_login_validate_answer'), 10, 2);
 
-		add_action('wp_head', array($this, 'obr_header'));
 		add_action('admin_menu', array($this, 'obr_admin_menu'));
 		add_action('init', array($this, 'obr_init'));
 	}
@@ -223,10 +218,6 @@ class obr_humancaptcha{
 		return $fields;
 	}
 	
-	function obr_header(){
-		echo "\n".'<!-- Using Outerbridge HumanCaptcha.  Find out more at http://outerbridge.co.uk/ -->'."\n";
-	}
-
 	function obr_select_question(){
 		global $wpdb;
 		global $obr_hc_table_name;

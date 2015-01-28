@@ -44,34 +44,24 @@ if (isset($_POST['togglesetting'])){
 	}
 }
 ?>
-<h1><?php _e('HumanCaptcha - Settings', 'humancaptcha'); ?></h1>
-<br />
-<div style="background: #ddd; border: 1px solid #bbb; padding: 10px;">
-	<h3>Learn more about <a href="http://codecanyon.net/item/human-contact-and-captcha-for-wordpress/5756127?ref=outerbridge">Human Contact & Captcha Premium version</a></h3>
-	<p>Looking for more options? Look no further than <a href="http://codecanyon.net/item/human-contact-and-captcha-for-wordpress/5756127?ref=outerbridge">Human Contact and Captcha</a>. It comes with all the goodness of the free HumanCaptcha plugin, plus the following extras:</p>
-	<ol>
-		<li>Use HumanCaptcha on your lost password form (not just login, registration and comments)</li>
-		<li>Contact form included, incorporating the HumanCaptcha verification</li>
-		<li>Includes visual editor shortcode for contact form</li>
-		<li>The ability to import your own questions and answers from a CSV file, for use wherever HumanCaptcha applies</li>
-		<li>Enhanced admin section; easily upgrades without losing your existing questions and answers</li>
-	</ol>
-	<p><a href="http://codecanyon.net/item/human-contact-and-captcha-for-wordpress/5756127?ref=outerbridge">Human Contact and Captcha</a> is exclusively available at <a href="http://codecanyon.net/item/human-contact-and-captcha-for-wordpress/5756127?ref=outerbridge">CodeCanyon</a>.</p>
+<div class="wrap">
+	<h2><?php _e('HumanCaptcha - Settings', 'humancaptcha'); ?></h2>
+	<br />
+	<h3><?php _e('HumanCaptcha Usage', 'humancaptcha'); ?></h3>
+	<p><?php _e('You can decide whether or not HumanCaptcha is applied to comment, registration and/or login forms.  Just toggle the settings below.', 'humancaptcha'); ?></p>
+	<?php
+	echo $this->obr_admin_settings();
+	?>
+	<br />
+	<h3><?php _e('HumanCaptcha Questions and Answers', 'humancaptcha'); ?></h3>
+	<p><?php _e('You can update your questions and answers here.', 'humancaptcha'); ?></p>
+	<?php
+	if (isset($_POST['addqanda']) && (!$question) && (!$answer)){
+		echo $this->obr_qanda_settings($message, $question, $answer);
+	} else {
+		echo $this->obr_qanda_settings($message);
+	}
+	?>
+	<br />
+	<br />
 </div>
-<h3><?php _e('HumanCaptcha Usage', 'humancaptcha'); ?></h3>
-<p><?php _e('You can decide whether or not HumanCaptcha is applied to comment, registration and/or login forms.  Just toggle the settings below.', 'humancaptcha'); ?></p>
-<?php
-echo $this->obr_admin_settings();
-?>
-<br />
-<h3><?php _e('HumanCaptcha Questions and Answers', 'humancaptcha'); ?></h3>
-<p><?php _e('You can update your questions and answers here.', 'humancaptcha'); ?></p>
-<?php
-if (isset($_POST['addqanda']) && (!$question) && (!$answer)){
-	echo $this->obr_qanda_settings($message, $question, $answer);
-} else {
-	echo $this->obr_qanda_settings($message);
-}
-?>
-<br />
-<br />
